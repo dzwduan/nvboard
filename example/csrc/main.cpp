@@ -41,6 +41,7 @@ int main() {
 
 
 // void sim_init(){
+//   nvboard_bind_all_pins(top);
 //   contextp = new VerilatedContext;
 //   tfp = new VerilatedVcdC;
 //   top = new Vtop;
@@ -57,20 +58,15 @@ int main() {
 // }
 
 // int main() {
-//   nvboard_bind_all_pins(top);
 //   sim_init();
 
-//   top->x0=0; top->x1=1; top->x2=2; top->x3=3;
-//                       top->y=0;  step_and_dump_wave();
-//                       top->y=1;  step_and_dump_wave();
-//                       top->y=2;  step_and_dump_wave();
-//                       top->y=3;  step_and_dump_wave();
-
-//   top->x0=3; top->x1=2; top->x2=1; top->x3=0;
-//                       top->y=0;  step_and_dump_wave();
-//                       top->y=1;  step_and_dump_wave();
-//                       top->y=2;  step_and_dump_wave();
-//                       top->y=3;  step_and_dump_wave();
-
+//   top->en = 0b0;  top->x = 0b00;  step_and_dump_wave();
+//                   top->x = 0b01;  step_and_dump_wave();
+//                   top->x = 0b10;  step_and_dump_wave();
+//                   top->x = 0b11;  step_and_dump_wave();
+//   top->en = 0b1;  top->x = 0b00;  step_and_dump_wave();
+//                   top->x = 0b01;  step_and_dump_wave();
+//                   top->x = 0b10;  step_and_dump_wave();
+//                   top->x = 0b11;  step_and_dump_wave();
 //   sim_exit();
 // }

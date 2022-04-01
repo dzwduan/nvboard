@@ -95,21 +95,105 @@
 
 
 
+// module top(
+//     input [1:0] x0,
+//     input [1:0] x1,
+//     input [1:0] x2,
+//     input [1:0] x3,
+//     input [1:0] y,
+//     output[1:0] f
+// );
+
+//     MuxKeyWithDefault #(4,2,2) mux_demo (
+//         f,y,2'b00, {
+//             2'b00, x0,
+//             2'b01, x1,
+//             2'b10, x2,
+//             2'b11, x3
+//         }
+//     );
+// endmodule
+
+// module top(x,en,y);
+//   input  [1:0] x;
+//   input  en;
+//   output reg [3:0]y;
+
+//   always @(x or en)
+//     if (en)
+//     begin
+//       case (x)
+//             2'd0 : y = 4'b0001;
+//             2'd1 : y = 4'b0010;
+//             2'd2 : y = 4'b0100;
+//             2'd3 : y = 4'b1000;
+//       endcase
+//     end
+//     else  y = 4'b0000;
+
+// endmodule
+
+// module bcd7seg(
+//   input  [3:0] b,
+//   output reg [6:0] h
+// );
+// // detailed implementation ...
+
+// endmodule
+
+
 module top(
-    input [1:0] x0,
-    input [1:0] x1,
-    input [1:0] x2,
-    input [1:0] x3,
-    input [1:0] y,
-    output[1:0] f
+    input [7:0] in,
+    input en,
+    output signal,
+    output reg [2:0] out,
+    output reg [6:0] seg
 );
 
-    MuxKeyWithDefault #(4,2,2) mux_demo (
-        f,y,2'b00, {
-            2'b00, x0,
-            2'b01, x1,
-            2'b10, x2,
-            2'b11, x3
-        }
-    );
+    always@(in or en) begin
+        if (en)
+            begin
+                casez (in)
+                    8'b1???????: out=3'b111;
+		            8'b01??????: out=3'b110;
+		            8'b001?????: out=3'b101;
+		            8'b0001????: out=3'b100;
+		            8'b00001???: out=3'b011;
+		            8'b000001??: out=3'b010;
+		            8'b0000001?: out=3'b001;
+		            8'b00000001: out=3'b000;
+		            default:     out=3'b000;
+                endcase
+            end
+        else out=3'b000;
+
+        if (en)
+            begin
+                case (out)
+		            3'b111: seg=7'b1111000;
+		            3'b110: seg=7'b0000010;
+		            3'b101: seg=7'b0010010;
+		            3'b100: seg=7'b0011001;
+		            3'b011: seg=7'b0110000;
+		            3'b010: seg=7'b0100100;
+		            3'b001: seg=7'b1111001;
+		            3'b000: seg=7'b0111111;
+
+                    // 3'b111: seg=7'b1000000;
+		            // 3'b110: seg=7'b0100000;
+		            // 3'b101: seg=7'b0010000;
+		            // 3'b100: seg=7'b0001000;
+		            // 3'b011: seg=7'b0000100;
+		            // 3'b010: seg=7'b0000010;
+		            // 3'b001: seg=7'b0000001;
+		            // 3'b000: seg=7'b0000000;
+		            default:seg=7'b0000000;
+	            endcase
+            end
+        else seg=7'b0;
+    end
+
+    assign signal = en;
+
+
 endmodule
