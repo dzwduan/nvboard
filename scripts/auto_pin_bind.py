@@ -4,7 +4,7 @@ import os
 class BoardDescParser():
   def __init__(self):
       self.pins = {}
-  
+
   def parseLine(self, lid, lineseg):
     direction = lineseg[0].strip()
     pinname = lineseg[1].strip()
@@ -13,7 +13,7 @@ class BoardDescParser():
       direction = direction[3:]
     else:
       is_realtime = False
-    
+
     if direction == "input":
       is_output = False
     elif direction == "output":
@@ -21,35 +21,35 @@ class BoardDescParser():
     else:
       print(f"Board Line {lid}: Error: Invalid pin direction \"{direction}\"")
       exit(-1)
-    
+
     self.pins[pinname] = (is_realtime, is_output)
-  
+
   def parseFile(self, path):
     self.pins = {}
     with open(path, "r") as f:
-      for i, line in enumerate(f):    
+      for i, line in enumerate(f):
         # Remove comment
         if '#' in line:
           line = line[:line.find('#')]
         line = line.strip()
-        
+
         # Skip empty lines
         if line == '':
           continue
-        
+
         lineseg = line.split()
         if len(lineseg) == 2:
           self.parseLine(i, lineseg)
         else:
           print(f"Board Line {i}: Error: Invalid line \"{line}\"")
           exit(-1)
-  
+
   def checkPinValid(self, pin):
     return pin in self.pins
-  
+
   def getPinRateStr(self, pin):
     return "BIND_RATE_RT " if self.pins[pin][0] else "BIND_RATE_SCR"
-  
+
   def getPinDirStr(self, pin):
     return "BIND_DIR_OUT" if self.pins[pin][1] else "BIND_DIR_IN "
 
@@ -58,7 +58,7 @@ class NxdcParser():
   def __init__(self) -> None:
       self.toplevel = ""
       self.binds = []
-  
+
   def parseToplevel(self, topline):
     sptopline = topline.split('=')
     if not '=' in topline or sptopline[0].strip() != 'top' or len(sptopline) != 2:

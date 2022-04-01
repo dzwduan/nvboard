@@ -73,12 +73,14 @@ SDL_Rect btn_rects[6] = {
 
 extern std::string nvboard_home;
 
+
 void load_background(SDL_Renderer *renderer) {
+  SDL_RenderClear(renderer);
   sfpga_background = IMG_Load((nvboard_home + "/pic/" + BG_PATH).c_str());
   tfpga_background = SDL_CreateTextureFromSurface(renderer, sfpga_background);
   SDL_Rect rect_bg = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
   SDL_RenderCopy(renderer, tfpga_background, NULL, &rect_bg);
-  
+
 #ifdef SEG_BKGND_ENA
 #ifdef SEG_BKGND_CUSTOM
   sseg7_background = IMG_Load((nvboard_home + "/pic/" + VSEGLED_BG_PATH).c_str());
@@ -86,7 +88,7 @@ void load_background(SDL_Renderer *renderer) {
   sseg7_background = SDL_CreateRGBSurface(0, SEG_TOT_WIDTH, SEG_TOT_HEIGHT, 32, 0, 0, 0, 0);
   SDL_FillRect(sseg7_background, NULL, SDL_MapRGB(sseg7_background->format, 0x00, 0x00, 0x00));
 #endif
-  
+
   tseg7_background = SDL_CreateTextureFromSurface(renderer, sseg7_background);
   SDL_Rect rect_seg7 = {SEG_X, SEG_Y, SEG_TOT_WIDTH, SEG_TOT_HEIGHT};
   SDL_RenderCopy(renderer, tseg7_background, NULL, &rect_seg7);
@@ -94,6 +96,7 @@ void load_background(SDL_Renderer *renderer) {
 }
 
 void fill_rect_texture(SDL_Renderer *renderer, SDL_Surface **surface, SDL_Texture **texture, int r, int g, int b) {
+  //特定颜色填充，NULL代表整个表面，
   SDL_FillRect(*surface, NULL, SDL_MapRGB((*surface)->format, r, g, b));
   *texture = SDL_CreateTextureFromSurface(renderer, *surface);
 }

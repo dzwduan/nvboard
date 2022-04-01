@@ -114,11 +114,19 @@ void nvboard_update() {
 void nvboard_init(int vga_clk_cycle) {
     printf("NVBoard v0.2\n");
     // init SDL and SDL_image
-    SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-    IMG_Init(IMG_INIT_PNG);
+    if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
+      fprintf(stderr, "could not initialize sdl2: %s\n", SDL_GetError());
+      exit(-1);
+    }
+    if (!IMG_Init(IMG_INIT_PNG)&IMG_INIT_PNG) {
+      fprintf(stderr, "could not initialize sdl2_image: %s\n", IMG_GetError());
+      exit(-1);
+    }
 
+    //SDL_WINDOW_SHOWN is ignored by SDL_CrateWindow
     main_window = SDL_CreateWindow("nvboard", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH * 2, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-    main_renderer = SDL_CreateRenderer(main_window, -1, 
+    //renderer渲染器将内容绘制到窗口，-1代表自动选择显卡驱动
+    main_renderer = SDL_CreateRenderer(main_window, -1,
     #ifdef VSYNC
         SDL_RENDERER_PRESENTVSYNC |
     #endif
@@ -129,9 +137,10 @@ void nvboard_init(int vga_clk_cycle) {
     #endif
         0
     );
-    
+
+    //获取环境变量
     nvboard_home = getenv("NVBOARD_HOME");
-    
+
     load_background(main_renderer);
     load_texture(main_renderer);
     init_components(main_renderer);
